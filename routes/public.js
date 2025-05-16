@@ -1,8 +1,13 @@
 const express = require('express');
+const { join } = require('path');
 const publicRouter = express.Router();
 
 // for looking up the subscription details since sending in with json is not allowed
 const { Subscription } = require('../models');
+
+publicRouter.get('/', (req, res) => {
+    res.sendFile(join(__dirname, '../public/subscribe.html'));
+});
 
 publicRouter.get('/confirm/:token', async (req, res) => {
     const { token } = req.params;

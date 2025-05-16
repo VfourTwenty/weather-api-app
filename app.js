@@ -42,7 +42,7 @@ cron.schedule('0 * * * *', () => {
   runHourlyJob();
 });
 
-cron.schedule('* 11 * * *', () => {
+cron.schedule('0 11 * * *', () => {
   console.log('Running daily weather job...');
   runDailyJob();
 });
