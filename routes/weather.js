@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// move to a separate shared location
-const WEATHER_API_KEY = '588e4679207f459c9d893949251405';
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
 // expose the weather api endpoint
 router.get('/weather', async (req, res) => {

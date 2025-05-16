@@ -84,8 +84,22 @@
     document.getElementById('subscribe-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = new FormData(e.target);
-        const data = new URLSearchParams(form);
+        const email = form.get('email');
+        const city = form.get('city');
+        const frequency = form.get('frequency');
+        const msg = document.getElementById('message');
+        msg.innerText = 'Validating city...';
 
+        const weatherRes = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
+        if (!weatherRes.ok) {
+            const err = await weatherRes.json();
+            msg.innerText = `❌ Invalid city: ${err.error || 'Please check spelling'}`;
+            return;
+        }
+
+        msg.innerText = 'Subscribing...';
+
+        const data = new URLSearchParams({ email, city, frequency });
         const res = await fetch('/api/subscribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -93,8 +107,9 @@
         });
 
         const json = await res.json();
-        document.getElementById('message').innerText = json.message || json.error;
+        msg.innerText = json.message || json.error;
     });
 </script>
+
 </body>
 </html>

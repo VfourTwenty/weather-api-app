@@ -3,7 +3,7 @@ const {Subscription} = require("../models");
 require('dotenv').config();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const WEATHER_API_KEY = '588e4679207f459c9d893949251405';
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
 async function sendConfirmationEmail(to, confirmUrl) {
     try {
