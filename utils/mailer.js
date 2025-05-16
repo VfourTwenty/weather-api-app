@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const BASE_URL = process.env.BASE_URL;
 
 async function sendConfirmationEmail(to, confirmUrl) {
     try {
@@ -65,7 +66,7 @@ async function sendWeatherUpdate(email, city, weather, token) {
       <li><strong>Humidity:</strong> ${weather.humidity}%</li>
       <li><strong>Condition:</strong> ${weather.description}</li>
     </ul>
-    <p>To unsubscribe, click <a href="/unsubscribe/${token}">here</a>.</p>
+    <p>To unsubscribe, click <a href="${BASE_URL}/unsubscribe/${token}">here</a>.</p>
     <p style="font-size: 0.8rem; color: gray;">SkyFetch 2025 by VfourTwenty</p>
   `;
     try {
