@@ -5,7 +5,8 @@
   "scripts": {
     "start": "npm run migrate && node ./bin/www",
     "migrate": "npx sequelize-cli db:migrate",
-    "test": "NODE_ENV=test mocha"
+    "test": "NODE_ENV=test mocha",
+    "debug": "node scripts/debug.js"
   },
   "dependencies": {
     "chai": "^4.3.7",

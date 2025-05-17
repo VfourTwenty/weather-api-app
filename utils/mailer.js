@@ -1,9 +1,8 @@
 const { Resend } = require('resend');
-const {Subscription} = require("../models");
+const {Subscription, WeatherData} = require("../models");
 require('dotenv').config();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const BASE_URL = process.env.BASE_URL;
 
 async function sendConfirmationEmail(to, confirmUrl) {
@@ -44,17 +43,9 @@ async function sendUnsubscribeEmail(to, city) {
     }
 }
 
-async function fetchWeather(city) {
-    const url = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${encodeURIComponent(city)}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-
-    return {
-        temperature: data.current.temp_c,
-        humidity: data.current.humidity,
-        description: data.current.condition.text
-    };
+// internal function
+function delay(ms) {
+    return new Promise((res) => setTimeout(res, ms));
 }
 
 async function sendWeatherUpdate(email, city, weather, token) {
@@ -77,48 +68,45 @@ async function sendWeatherUpdate(email, city, weather, token) {
             html: body
         });
 
+
+        if (response.error?.statusCode === 429) {
+            console.warn(`⚠️ Rate limit hit for ${email}. Retrying after 0.5s...`);
+            await delay(510);
+            return await sendWeatherUpdate(email, city, weather, token); // retry once
+        }
+
         console.log(`📧 Email sent to ${email}`, response);
+
     } catch (err) {
         console.error(`❌ Failed to send email to ${email}:`, err.message || err);
     }
 }
 
-async function runHourlyJob() {
+
+async function sendUpdates(frequency) {
     const subs = await Subscription.findAll({
-        where: { confirmed: true, frequency: 'hourly' }
+        where: { confirmed: true, frequency }
     });
 
     for (const sub of subs) {
         try {
-            const weather = await fetchWeather(sub.city);
-            await sendWeatherUpdate(sub.email, sub.city, weather, sub.token);
-            console.log(`✅ Email sent to ${sub.email}`);
+            const weather = await WeatherData.findByPk(sub.city);
+            if (!weather) {
+                console.warn(`⚠️ No weather data cached for ${sub.city}, skipping ${sub.email}`);
+                continue;
+            }
+
+            await sendWeatherUpdate(sub.email, sub.city, weather.toJSON(), sub.token);
+            console.log(`✅ ${frequency} email sent to ${sub.email}`);
         } catch (err) {
-            console.error(`❌ Failed for ${sub.email}:`, err.message);
+            console.error(`❌ Failed ${frequency} for ${sub.email}:`, err.message);
         }
     }
 }
 
-
-async function runDailyJob() {
-    const subs = await Subscription.findAll({
-        where: { confirmed: true, frequency: 'daily' }
-    });
-
-    for (const sub of subs) {
-        try {
-            const weather = await fetchWeather(sub.city);
-            await sendWeatherUpdate(sub.email, sub.city, weather, sub.token);
-            console.log(`✅ Daily email sent to ${sub.email}`);
-        } catch (err) {
-            console.error(`❌ Failed daily for ${sub.email}:`, err.message);
-        }
-    }
-}
 
 module.exports = {
     sendConfirmationEmail,
     sendUnsubscribeEmail,
-    runHourlyJob,
-    runDailyJob
+    sendUpdates
 };

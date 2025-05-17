@@ -10,7 +10,9 @@ const publicRouter = require('./routes/public')
 
 const app = express();
 const cron = require('node-cron');
-const {runHourlyJob, runDailyJob} = require('./utils/mailer');
+
+const { fetchHourlyWeather, fetchDailyWeather } = require ('./utils/fetchweather');
+const { sendUpdates } = require('./utils/mailer');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -37,14 +39,26 @@ app.use(function(err, req, res, next) {
   });
 });
 
-cron.schedule('0 * * * *', () => {
+// fetch the weather first then email !!
+cron.schedule('0 * * * *', async () => {
   console.log('Running hourly weather job...');
-  runHourlyJob();
+  try {
+    await fetchHourlyWeather();
+    console.log("hourly weather fetched");
+    await sendUpdates('hourly');
+  } catch (err) {
+    console.error('❌ Hourly job failed:', err.message || err);
+  }
 });
 
-cron.schedule('0 11 * * *', () => {
+cron.schedule('0 18 * * *', async () => {
   console.log('Running daily weather job...');
-  runDailyJob();
+  try {
+    await fetchDailyWeather();
+    await sendUpdates('daily');
+  } catch (err) {
+    console.error('❌ Daily job failed:', err.message || err);
+  }
 });
 
 module.exports = app;

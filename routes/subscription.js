@@ -3,8 +3,8 @@ const router = express.Router();
 const { Subscription } = require('../models');
 const crypto = require('crypto');
 
+const { incrementCityCounter, decrementCityCounter } = require('../utils/subtracker');
 const { sendConfirmationEmail, sendUnsubscribeEmail } = require('../utils/mailer');
-const { isBrowser, respondOrRedirect } = require('../utils/respond');
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -93,6 +93,8 @@ router.get('/confirm/:token', async (req, res) => {
         sub.confirmed = true;
         await sub.save();
 
+        await incrementCityCounter(sub.city, sub.frequency);
+
         // additional fields for confirmation page
         res.status(200).json({ message: 'Subscription confirmed successfully' });
 
@@ -124,6 +126,8 @@ router.get('/unsubscribe/:token', async (req, res) => {
             console.log(`error: ${emailResult.error.message}`);
             return res.status(500).json({ error: 'Unsubscribed, but failed to send confirmation email.' });
         }
+
+        await decrementCityCounter(sub.city, sub.frequency);
 
         res.status(200).json({ message: 'Unsubscribed successfully'});
 

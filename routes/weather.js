@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+require('dotenv').config();
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
 // expose the weather api endpoint
