@@ -2,13 +2,18 @@ require('dotenv').config();
 
 module.exports = {
     development: {
-        use_env_variable: 'DATABASE_URL',
         username: 'postgres',
         password: 'alwayssunny',
         database: 'weather_db',
         host: '127.0.0.1',
         dialect: 'postgres'
     },
+
+    docker: {
+        use_env_variable: 'DATABASE_URL',
+        dialect: 'postgres'
+    },
+
     test: {
         username: 'postgres',
         password: 'alwayssunny',
@@ -16,6 +21,7 @@ module.exports = {
         host: '127.0.0.1',
         dialect: 'postgres'
     },
+
     production: {
         username: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
