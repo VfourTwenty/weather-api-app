@@ -51,7 +51,7 @@ cron.schedule('0 * * * *', async () => {
   }
 });
 
-cron.schedule('0 18 * * *', async () => {
+cron.schedule('0 12 * * *', async () => {
   console.log('Running daily weather job...');
   try {
     await fetchDailyWeather();

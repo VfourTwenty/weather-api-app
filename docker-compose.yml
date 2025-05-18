@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: weather_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: alwayssunny
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  # Host 5433 → Container 5432
+
+
+  backend:
+    build: .
+    restart: always
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: development
+      FROM_EMAIL: skyfetch@resend.dev
+      DATABASE_URL: postgres://postgres:alwayssunny@db:5432/weather_db
+      RESEND_API_KEY: re_D4x576dB_Cp74P9pQKpvuUwjqGyEEHeUo
+    ports:
+      - "3000:3000"
+    command: npm start
+
+volumes:
+  pgdata:
