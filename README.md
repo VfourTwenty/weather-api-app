@@ -24,3 +24,34 @@ after this job is done, cron mailer sends updates for all hourly subscribers usi
 
 regarding daily subscriptions, its very likely that if someone signed up for daily updates for a city, someone else had already subscribed for hourly updates in the same city, so the cache from hourly updates can be reused in this case.
 daily fetcher only queries weatherapi for those cities which have > 0 daily subscribers AND 0 hourly (meaning the data isn't being fetched on hourly basis). Then again, the WeatherData gets filled for missing entries, and the cron mailer uses it to send daily updates.
+
+# Project Title
+
+Welcome to **Project Title**! This is a brief description of what the project does.
+
+## Table of Contents
+
+- [About](#about)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
+
+## About
+
+Write something about your project, what problem it solves, or why it exists.
+
+## Features
+
+- Feature 1
+- Feature 2
+- Feature 3
+
+## Installation
+
+```bash
+git clone https://github.com/yourusername/yourproject.git
+cd yourproject
+npm install
