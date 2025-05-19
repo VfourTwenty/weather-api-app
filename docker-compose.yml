@@ -24,9 +24,10 @@ services:
       NODE_ENV: docker
       FROM_EMAIL: skyfetch@resend.dev
       DATABASE_URL: postgres://postgres:alwayssunny@db:5432/weather_db
+      WEATHER_API_KEY: 588e4679207f459c9d893949251405
       RESEND_API_KEY: re_D4x576dB_Cp74P9pQKpvuUwjqGyEEHeUo
     ports:
-      - "3001:3000"
+      - "3000:3000"
     command: npm start
 
 volumes:
