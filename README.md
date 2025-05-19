@@ -118,7 +118,7 @@ npm test
 
 ## Hosting
 
-🌐 The app is also hosted on [Render](https://weatherapi-backend-z94f.onrender.com) for mailing services and demo purposes.
+🌐 The app is also hosted on [Render](https://weatherapi-backend-z94f.onrender.com) for demo purposes (it does spin down due to free plan being used).
 
 ---
 
