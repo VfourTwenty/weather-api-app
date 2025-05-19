@@ -38,7 +38,7 @@ The following API endpoints are implemented:
 
 These routes are prefixed with /api.
 There are also public routes (homepage, `/confirm/:token`, `/unsubscribe/:token`) that render the corresponding HTML pages.
-Homepage is the UI entry point available at /. Confirmation and unsubscription pages are only available with a valid token received in emails.
+Homepage is the UI entry point available at /. Confirmation and unsubscription pages are only available with a valid token received in emails. There is also a fallback page: error.html.
 
 ---
 
@@ -48,7 +48,7 @@ Homepage is the UI entry point available at /. Confirmation and unsubscription p
 - The `WeatherCity` table tracks subscription count by city and frequency, used to optimize forecast fetching.
 - The `WeatherData` table holds the most recent forecast fetch per city.
 - The `Subscriptions` table holds user data: email, city, frequency, and token.
-- - Migrations are automatically run when the app starts (via the `npm start` script).  
+- Migrations are automatically run when the app starts (via the `npm start` script).  
     You can also run them manually using:
     ```bash```
     npm run migrate
@@ -92,7 +92,7 @@ A timeout is used in the mailing process to work around resend request limits.
 
 - Environment separation is handled using different configuration methods:
     - **Production** uses a `.env` file for sensitive environment variables.
-    - **Development** and **Test** environments use values defined in the `config` directory (e.g., `config/config.js` with `NODE_ENV` detection).
+    - **Development** and **Test** environments use values defined in the `config` directory (`config/config.js` with `NODE_ENV` detection).
 
     - ⚠️ **Security Note**: This project includes API keys directly in `docker-compose.yml` for simplicity and convenience. In real world apps API keys should not be pushed to github ;)
 
