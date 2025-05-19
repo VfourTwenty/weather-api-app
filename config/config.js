@@ -26,7 +26,7 @@ module.exports = {
 
     // deployed on render
     production: {
-        baseUrl: 'weatherapi-backend-z94f.onrender.com',
+        baseUrl: 'https://weatherapi-backend-z94f.onrender.com',
         username: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
