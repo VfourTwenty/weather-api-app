@@ -39,8 +39,8 @@ app.use(function(err, req, res, next) {
   });
 });
 
-// fetch the weather first then email !!
-cron.schedule('15 * * * *', async () => {
+
+cron.schedule('0 * * * *', async () => {
   console.log('Running hourly weather job...');
   try {
     await fetchHourlyWeather();
@@ -51,7 +51,7 @@ cron.schedule('15 * * * *', async () => {
   }
 });
 
-cron.schedule('0 12 * * *', async () => {
+cron.schedule('0 11 * * *', async () => {
   console.log('Running daily weather job...');
   try {
     await fetchDailyWeather();

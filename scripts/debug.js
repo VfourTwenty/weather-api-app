@@ -2,30 +2,29 @@ const { Subscription, WeatherData, WeatherCity, sequelize } = require('../models
 
 async function listSubscriptions() {
     const all = await Subscription.findAll();
-    console.log('\n📦 All Subscriptions:\n', all.map(s => s.toJSON()));
+    console.log('\nAll Subscriptions:\n', all.map(s => s.toJSON()));
 }
 
 async function findSubscriptionByEmail(email) {
     const match = await Subscription.findAll({ where: { email } });
-    console.log(`\n📬 Subscriptions for ${email}:\n`, match.map(s => s.toJSON()));
+    console.log(`\nSubscriptions for ${email}:\n`, match.map(s => s.toJSON()));
 }
 
 async function listWeather() {
-    const all = await WeatherData.findAll({ order: [['datetime', 'DESC']] });
-    console.log('\n🌦️ All Weather Data:\n', all.map(w => w.toJSON()));
+    const all = await WeatherData.findAll();
+    console.log('\nAll Weather Data:\n', all.map(w => w.toJSON()));
 }
 
 async function findWeatherByCity(city) {
     const match = await WeatherData.findAll({
-        where: { city },
-        order: [['datetime', 'DESC']],
+        where: { city }
     });
-    console.log(`\n🌆 Weather for ${city}:\n`, match.map(w => w.toJSON()));
+    console.log(`\nWeather for ${city}:\n`, match.map(w => w.toJSON()));
 }
 
 async function listTrackedCities() {
     const cities = await WeatherCity.findAll({ order: [['city', 'ASC']] });
-    console.log('\n📍 Tracked Cities:\n', cities.map(c => c.toJSON()));
+    console.log('\nTracked Cities:\n', cities.map(c => c.toJSON()));
 }
 
 async function findTrackedCity(city) {
@@ -33,7 +32,7 @@ async function findTrackedCity(city) {
     if (!entry) {
         console.log(`❌ No tracking info found for ${city}`);
     } else {
-        console.log(`\n📊 Tracker for ${city}:\n`, entry.toJSON());
+        console.log(`\nTracker for ${city}:\n`, entry.toJSON());
     }
 }
 
@@ -78,13 +77,13 @@ const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weathe
             break;
         default:
             console.log('🧪 Usage:');
-            console.log('  npm run debug sub:list');
-            console.log('  npm run debug sub:find email@example.com');
-            console.log('  npm run debug weather:list');
-            console.log('  npm run debug weather:find \"City Name\"');
-            console.log('  npm run debug weather:inspect');
-            console.log('  npm run debug tracker:list');
-            console.log('  npm run debug tracker:find \"City Name\"');
+            console.log('  debug sub:list');
+            console.log('  debug sub:find email@example.com');
+            console.log('  debug weather:list');
+            console.log('  debug weather:find \"City Name\"');
+            console.log('  debug weather:inspect');
+            console.log('  debug tracker:list');
+            console.log('  debug tracker:find \"City Name\"');
     }
 
     await sequelize.close();

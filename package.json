@@ -6,7 +6,8 @@
     "start": "npm run migrate && node ./bin/www",
     "migrate": "npx sequelize-cli db:migrate",
     "test": "NODE_ENV=test mocha",
-    "debug": "node scripts/debug.js"
+    "debug": "node scripts/debug.js",
+    "seed": "node scripts/seeder.js"
   },
   "dependencies": {
     "chai": "^4.3.7",
@@ -18,7 +19,6 @@
     "mocha": "^11.2.2",
     "morgan": "~1.9.1",
     "node-cron": "^4.0.5",
-    "nodemailer": "^7.0.3",
     "pg": "^8.16.0",
     "pg-hstore": "^2.3.4",
     "resend": "^4.5.1",

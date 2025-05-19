@@ -48,19 +48,14 @@ router.post('/subscribe', async (req, res) => {
             token
         });
 
-        // Send confirmation email
-        // change this to public route instead of api/
-
         const env = process.env.NODE_ENV || 'docker';
         const config = require('../config/config.js')[env];
 
         const confirmUrl = `${config.baseUrl}/confirm/${token}`;
 
-        // const confirmUrl = `${req.protocol}://${req.get('host')}/confirm/${token}`;
         const emailResult = await sendConfirmationEmail(email, confirmUrl);
 
         if (!emailResult || emailResult.error) {
-            //respondOrRedirect(req, res, 500, 'Subscription saved but failed to send confirmation email.')
             return res.status(500).json({ error: 'Subscription saved but failed to send confirmation email.' });
         }
 

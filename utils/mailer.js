@@ -3,7 +3,11 @@ const {Subscription, WeatherData} = require("../models");
 require('dotenv').config();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const BASE_URL = process.env.BASE_URL;
+
+const env = process.env.NODE_ENV || 'docker';
+const config = require('../config/config.js')[env];
+
+const BASE_URL = config.baseUrl;
 
 async function sendConfirmationEmail(to, confirmUrl) {
     try {
