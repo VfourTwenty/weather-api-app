@@ -1,57 +1,138 @@
-API endpoints implemented:
-...
+# SkyFetch – Weather API Subscription Service
 
-Tests cover such cases:
-    * Weather API
-        -
-    * Subscription Management API
-
-
-
-subscription logic:
-
-one email cannot subscribe twice for the same city and frequency its already subscribed for. a message is shown accordingly on the subscription page.
-to eliminate subscriptions to invalid cities and avoid later errors while emailing users, a test request is sent to weatherapi to check for invalid location. in that case a message is shown as well.
-
-
-
-mailing logic:
-
-upon subscription confirmation a WeatherCity (subscription tracking table in the db) gets updated. if a city with previously 0 subscribers is subscribed to, and entry is added, and the relevant counter is incremented based on the subscription type (hourly/daily).
-when someone unsubscribes, the relevant counter in the table is decremented and a check is performed to see whether the are other subscribers to the city, and if no (both counters = 0), the entry is removed entirely.
-weather is fetched every hour for cities with hourly subscribers count > 0. the data is stored in the weatherData table overwriting the previous entry for a city, so there is only one row per city with the most recent forecast.
-after this job is done, cron mailer sends updates for all hourly subscribers using the cashed forecast fom the weatherData
-
-regarding daily subscriptions, its very likely that if someone signed up for daily updates for a city, someone else had already subscribed for hourly updates in the same city, so the cache from hourly updates can be reused in this case.
-daily fetcher only queries weatherapi for those cities which have > 0 daily subscribers AND 0 hourly (meaning the data isn't being fetched on hourly basis). Then again, the WeatherData gets filled for missing entries, and the cron mailer uses it to send daily updates.
-
-# Project Title
-
-Welcome to **Project Title**! This is a brief description of what the project does.
+A weather forecast subscription API with email notifications, built using Node.js (Express), PostgreSQL, and Resend.
 
 ## Table of Contents
 
-- [About](#about)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [API Reference](#api-reference)
-- [Contributing](#contributing)
-- [License](#license)
+- [API Endpoints](#api-endpoints)
+- [Database Usage](#database-usage)
+- [Docker Support](#docker-support)
+- [Subscription Logic](#subscription-logic)
+- [Mailing Logic](#mailing-logic)
+- [Environment Configuration](#environment-configuration)
+- [Testing](#testing)
+- [Hosting](#hosting)
+- [Scripts](#scripts)
 
-## About
+---
 
-Write something about your project, what problem it solves, or why it exists.
+## API Endpoints
 
-## Features
+The following API endpoints are implemented:
 
-- Feature 1
-- Feature 2
-- Feature 3
+### Weather API
 
-## Installation
+- `GET /weather`  
+  Get current weather for a city
 
-```bash
-git clone https://github.com/yourusername/yourproject.git
-cd yourproject
-npm install
+### Subscription Management API
+
+- `POST /subscribe`  
+  Subscribe to weather updates
+
+- `GET /confirm/:token`  
+  Confirm email subscription
+
+- `GET /unsubscribe/:token`  
+  Unsubscribe from weather updates
+
+These routes are prefixed with /api.
+There are also public routes (homepage, `/confirm/:token`, `/unsubscribe/:token`) that render the corresponding HTML pages.
+Homepage is the UI entry point available at /. Confirmation and unsubscription pages are only available with a valid token received in emails.
+
+---
+
+## Database Usage
+
+- PostgreSQL is used with Sequelize ORM.
+- The `WeatherCity` table tracks subscription count by city and frequency, used to optimize forecast fetching.
+- The `WeatherData` table holds the most recent forecast fetch per city.
+- The `Subscriptions` table holds user data: email, city, frequency, and token.
+- - Migrations are automatically run when the app starts (via the `npm start` script).  
+    You can also run them manually using:
+    ```bash```
+    npm run migrate
+
+---
+
+## Docker Support
+
+✅ Fully tested with:
+
+- Docker Engine (Linux)
+- Docker Desktop (Windows)
+
+To run:
+
+```bash```
+docker compose up --build
+
+---
+
+## Subscription Logic
+
+- One email cannot subscribe twice for the same city and frequency. A message is shown accordingly on the subscription page.
+- To eliminate invalid subscriptions, a test request is sent to WeatherAPI. If the location is invalid, an error message is shown and the subscription is rejected.
+
+---
+
+## Mailing Logic
+
+- Upon subscription confirmation, a `WeatherCity` entry in the database is updated. If it's a new city (with 0 previous subscribers), a new entry is added, and the appropriate counter (hourly/daily) is incremented.
+- On unsubscription, the counter is decremented. If both counters reach 0, the entry is removed entirely.
+- Weather is fetched hourly for cities with `hourlySubscribers > 0`. Forecast is cached in the `WeatherData` table, overwriting previous entries (only 1 row per city).
+- After caching, hourly updates are sent using the stored forecast via cron.
+- For daily updates, the hourly cache is reused when possible. Otherwise, daily fetcher pulls missing data for cities with `dailySubscribers > 0` and `hourlySubscribers = 0`.
+
+A timeout is used in the mailing process to work around resend request limits.
+
+---
+
+## Environment Configuration
+
+- Environment separation is handled using different configuration methods:
+    - **Production** uses a `.env` file for sensitive environment variables.
+    - **Development** and **Test** environments use values defined in the `config` directory (e.g., `config/config.js` with `NODE_ENV` detection).
+
+    - ⚠️ **Security Note**: This project includes API keys directly in `docker-compose.yml` for simplicity and convenience. In real world apps API keys should not be pushed to github ;)
+
+
+## Testing
+
+Tests cover:
+
+- **Weather API**
+    - City validation
+    - Forecast retrieval
+- **Subscription Management API**
+    - New subscriptions
+    - Token-based confirmation/unsubscription
+    - Duplicate prevention
+
+Tests run in a separate environment and database using:
+
+```bash```
+npm test
+
+---
+
+## Hosting
+
+🌐 The app is also hosted on [Render](https://weatherapi-backend-z94f.onrender.com) for mailing services and demo purposes.
+
+---
+
+## Scripts
+
+- Debug scripts are available in `scripts/debug` to view:
+    - Whole tables
+    - Individual entries
+- A seeder script is available at `scripts/seeder` to populate or clear tables. You should enter at least one valid email address to subscribe for updates. Also, you can enter cities or frequency, or leave those default. You can confirm all newly generated subscriptions through the api in script immediately or later.
+- Script usage:
+    - without docker:
+        - npm run debug (to see the usage)
+        - npm run seed
+    - for docker:
+        - docker compose run --rm debug node scripts/debug.js (see the usage)
+        - docker compose run --rm debug node scripts/seeder.js
+
