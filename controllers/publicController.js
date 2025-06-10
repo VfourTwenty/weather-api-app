@@ -1,4 +1,4 @@
-import {join} from "path";
+const { join } = require('path');
 
 // for looking up the subscription details since sending in with json is not allowed
 const { Subscription } = require('../models');
