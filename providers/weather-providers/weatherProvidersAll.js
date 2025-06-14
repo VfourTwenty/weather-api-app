@@ -1,11 +1,7 @@
 const Provider1 = require("./weatherProvider1");
 const weatherProviders = [new Provider1()]
 
-const state = {
-    activeWeatherProvider: weatherProviders[0],
-};
-
-function setActiveProvider(provider) {
+function setActiveWeatherProvider(provider) {
     if (weatherProviders.includes(provider)) {
         state.activeWeatherProvider = provider;
     } else {
@@ -14,4 +10,4 @@ function setActiveProvider(provider) {
 }
 
 
-module.exports = { weatherProviders, state };
+module.exports = { weatherProviders };

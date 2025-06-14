@@ -10,6 +10,17 @@ async function findSubscriptionByEmail(email) {
     console.log(`\nSubscriptions for ${email}:\n`, match.map(s => s.toJSON()));
 }
 
+async function findSubscriptionByCity(city) {
+    const { Op } = require('sequelize');
+    const matches = await Subscription.findAll({
+        where: {
+            city: { [Op.iLike]: city }   // case-insensitive
+        },
+    });
+    console.log(`\nSubscriptions for ${city}:\n`, matches.map(s => s.toJSON()));
+}
+
+
 async function listWeather() {
     const all = await WeatherData.findAll();
     console.log('\nAll Weather Data:\n', all.map(w => w.toJSON()));
@@ -49,9 +60,13 @@ const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weathe
         case 'sub:list':
             await listSubscriptions();
             break;
-        case 'sub:find':
+        case 'sub:find-email':
             if (!arg) return console.error('❗ Usage: npm run debug sub:find <email>');
             await findSubscriptionByEmail(arg);
+            break;
+        case 'sub:find-city':
+            if (!arg) return console.error('❗ Usage: npm run debug sub:find-city <city>');
+            await findSubscriptionByCity(arg);
             break;
         case 'weather:list':
             await listWeather();
@@ -78,7 +93,8 @@ const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weathe
         default:
             console.log('🧪 Usage:');
             console.log('  debug sub:list');
-            console.log('  debug sub:find email@example.com');
+            console.log('  debug sub:find-email email@example.com');
+            console.log('  debug sub:find-city \"City Name\"');
             console.log('  debug weather:list');
             console.log('  debug weather:find \"City Name\"');
             console.log('  debug weather:inspect');
