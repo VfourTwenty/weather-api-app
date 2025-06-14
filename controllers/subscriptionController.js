@@ -1,4 +1,4 @@
-const {Subscription} = require("../models");
+const {Subscription} = require("../db/models");
 const crypto = require("crypto");
 const { incrementCityCounter, decrementCityCounter } = require('../utils/subtracker');
 const { sendConfirmationEmail, sendUnsubscribeEmail } = require('../utils/mailer');

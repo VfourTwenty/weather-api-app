@@ -1,4 +1,4 @@
-const { WeatherCity, WeatherData } = require('../models');
+const { WeatherCity, WeatherData } = require('../db/models');
 const { Op } = require('sequelize');
 
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;

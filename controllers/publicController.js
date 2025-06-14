@@ -1,7 +1,7 @@
 const { join } = require('path');
 
 // for looking up the subscription details since sending in with json is not allowed
-const { Subscription } = require('../models');
+const { Subscription } = require('../db/models');
 const env = process.env.NODE_ENV || 'docker';
 const config = require('../config/config.js')[env];
 

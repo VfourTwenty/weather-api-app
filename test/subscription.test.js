@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../app');
 const { expect } = require('chai');
-const {Subscription, sequelize} = require("../models");
+const {Subscription, sequelize} = require("../db/models");
 
 const sinon = require('sinon');
 const mailer = require('../utils/mailer');

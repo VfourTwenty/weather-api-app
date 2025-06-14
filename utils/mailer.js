@@ -1,4 +1,4 @@
-const {Subscription, WeatherData} = require("../models");
+const {Subscription, WeatherData} = require("../db/models");
 
 require('dotenv').config();
 const env = process.env.NODE_ENV || 'docker';
