@@ -43,7 +43,6 @@ const confirmPublicController = async (req, res) => {
     } catch (err) {
         console.error('Confirmation frontend error:', err);
         const errorUrl = new URL(`${config.baseUrl}/error.html`);
-        // const errorUrl = new URL('/error.html', `${req.protocol}://${req.get('host')}`);
         errorUrl.searchParams.set('error', 'Internal server error 1');
         return res.redirect(errorUrl.toString());
     }
