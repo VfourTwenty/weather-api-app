@@ -9,5 +9,4 @@ function setActiveWeatherProvider(provider) {
     }
 }
 
-
-module.exports = { weatherProviders };
+module.exports = weatherProviders;

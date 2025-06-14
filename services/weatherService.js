@@ -1,4 +1,4 @@
-const { providerState } = require('../providers/state.js');
+const providerState  = require('../providers/state.js');
 
 function fetchWeather(city)
 {
