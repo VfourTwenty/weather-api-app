@@ -14,7 +14,7 @@ function startDailyWeatherJob() {
 }
 
 function startHourlyWeatherJob() {
-    cron.schedule('05 * * * *', async () => {
+    cron.schedule('59 * * * *', async () => {
         console.log('Running hourly weather fetch job...');
         try {
             await fetchHourlyWeather();

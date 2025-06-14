@@ -15,7 +15,7 @@ function startDailyEmailJob()
 
 function startHourlyEmailJob()
 {
-    cron.schedule('20 * * * *', async () => {
+    cron.schedule('0 * * * *', async () => {
         console.log('Running hourly email job...');
         try {
             await sendUpdates('hourly');
