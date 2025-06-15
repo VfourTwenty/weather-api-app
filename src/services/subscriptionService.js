@@ -16,8 +16,6 @@ async function doesSubExist({ email, city, frequency} )
 }
 
 async function createSub(email, city, frequency) {
-    console.log("in createSub");
-    console.log(email, city, frequency);
     if (!email || !city || !frequency) {
         throw new Error('MISSING REQUIRED FIELDS');
     }
@@ -31,13 +29,12 @@ async function createSub(email, city, frequency) {
     }
 
     const exists = await doesSubExist({ email, city, frequency} );
-    console.log(exists);
-    if (typeof exists === 'null')
+
+    if (exists)
     {
-        console.log("exists failed");
+        throw new Error('DUPLICATE');
     }
     const token = genToken();
-    console.log("checks passed, token: ", token);
 
     await Subscription.create({ email, city, frequency, confirmed: false, token });
     return token;

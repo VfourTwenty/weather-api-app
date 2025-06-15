@@ -1,5 +1,4 @@
 const {Subscription} = require("../db/models");
-const crypto = require("crypto");
 const { incrementCityCounter, decrementCityCounter } = require('../utils/subtracker');
 const { sendConfirmationEmail, sendUnsubscribeEmail } = require('../utils/mailer');
 
@@ -10,7 +9,6 @@ const { createSub, confirmSub, deleteSub, findByToken } = require('../services/s
 const subscribeController = async (req, res) => {
     const { email, city, frequency } = req.body;
 
-    // check is same subscription already exists
     try {
         const token = await createSub(email, city, frequency);
 
