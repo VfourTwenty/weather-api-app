@@ -57,7 +57,7 @@ async function deleteSub(token) {
 
 async function findSub(params)
 {
-    return await Subscription.findAll({where: params});
+    return await Subscription.findOne({where: params});
 }
 
 module.exports = { createSub, confirmSub, deleteSub, findSub };
