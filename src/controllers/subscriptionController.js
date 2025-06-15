@@ -3,45 +3,16 @@ const crypto = require("crypto");
 const { incrementCityCounter, decrementCityCounter } = require('../utils/subtracker');
 const { sendConfirmationEmail, sendUnsubscribeEmail } = require('../utils/mailer');
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const { createSub, confirmSub, deleteSub, findByToken } = require('../services/subscriptionService');
+
 
 const subscribeController = async (req, res) => {
     const { email, city, frequency } = req.body;
 
-    // required fields
-    if (!email || !city || !frequency) {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    // validate frequency
-    if (!['hourly', 'daily'].includes(frequency)) {
-        return res.status(400).json({ error: 'Invalid frequency' });
-    }
-
-    // validate email format
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ error: 'Invalid email format' });
-    }
     // check is same subscription already exists
     try {
-        const exists = await Subscription.findOne({ where: { email, city, frequency } });
-
-        if (exists) {
-            // respondOrRedirect(req, res, 409, 'Email already subscribed for this city and frequency')
-            return res.status(409).json({ error: 'Email already subscribed for this city and frequency' });
-        }
-
-        // generate a token
-        const token = crypto.randomBytes(20).toString('hex');
-
-        // create entry
-        await Subscription.create({
-            email,
-            city,
-            frequency,
-            confirmed: false,
-            token
-        });
+        const token = await createSub(email, city, frequency);
 
         const env = process.env.NODE_ENV || 'docker';
         const config = require('../config/config.js')[env];
@@ -57,9 +28,26 @@ const subscribeController = async (req, res) => {
         res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
 
     } catch (err) {
-        console.error(err);
-        // respondOrRedirect(req, res, 500, 'Failed to subscribe');
-        res.status(500).json({ error: 'Failed to subscribe' });
+        if (err.message === 'DUPLICATE')
+        {
+            res.status(409).json({error: 'Subscription already exists for this city and frequency.'});
+        }
+        else if (err.message === 'MISSING REQUIRED FIELDS')
+        {
+            res.status(400).json({error: 'Missing required fields.'});
+        }
+        else if (err.message === 'INVALID EMAIL FORMAT')
+        {
+            res.status(400).json({error: 'Invalid email format.'});
+        }
+        else if (err.message === 'INVALID FREQUENCY')
+        {
+            res.status(400).json({error: 'Invalid frequency.'});
+        }
+        else
+        {
+            res.status(500).json({ error: 'Failed to subscribe' });
+        }
     }
 }
 
