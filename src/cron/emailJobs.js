@@ -10,7 +10,7 @@ function startDailyEmailJob()
         } catch (err) {
             console.error('❌ Daily email job failed:', err.message || err);
         }
-    });
+    },{ timezone: 'Europe/Kyiv' });
 }
 
 function startHourlyEmailJob()
@@ -22,7 +22,7 @@ function startHourlyEmailJob()
         } catch (err) {
             console.error('❌ Hourly email job failed:', err.message || err);
         }
-    });
+    },{ timezone: 'Europe/Kyiv' });
 }
 
 module.exports = { startDailyEmailJob, startHourlyEmailJob };

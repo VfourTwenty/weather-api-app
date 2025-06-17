@@ -10,7 +10,7 @@ function startDailyWeatherJob() {
         } catch (err) {
             console.error('❌ Daily fetching job failed:', err.message || err);
         }
-    });
+    },{ timezone: 'Europe/Kyiv' });
 }
 
 function startHourlyWeatherJob() {
@@ -22,7 +22,7 @@ function startHourlyWeatherJob() {
         } catch (err) {
             console.error('❌ Hourly job failed:', err.message || err);
         }
-    });
+    },{ timezone: 'Europe/Kyiv' });
 }
 
 
