@@ -19,7 +19,7 @@
     "http-errors": "~1.6.3",
     "mocha": "^11.2.2",
     "morgan": "~1.9.1",
-    "node-cron": "^4.0.5",
+    "node-cron": "^4.1.0",
     "pg": "^8.16.0",
     "pg-hstore": "^2.3.4",
     "proxyquire": "^2.1.3",
