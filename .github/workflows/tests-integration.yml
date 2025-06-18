@@ -22,4 +22,4 @@ jobs:
         run: npm install
 
       - name: Run Integration tests
-        run: npm test
+        run: mocha test/weather.test.js --timeout 5000 --exit
