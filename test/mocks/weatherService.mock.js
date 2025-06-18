@@ -1,3 +1,5 @@
+console.log('mock called');
+
 module.exports = {
     fetchWeather: async (city) => {
         if (city === 'Kyiv') {

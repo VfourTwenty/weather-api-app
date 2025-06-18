@@ -4,9 +4,10 @@ const { expect } = require('chai');
 const proxyquire = require('proxyquire');
 
 // Load app with mocked service
-const app = proxyquire('../src/app', {
-    '../src/services/weatherService': require('./mocks/weatherService.mock'),
+const app = proxyquire(require.resolve('../src/app'), {
+    [require.resolve('../src/services/weatherService')]: require('./mocks/weatherService.mock'),
 });
+
 
 describe('GET /api/weather', () => {
     it('should return 400 if no city is provided', async () => {
