@@ -1,4 +1,4 @@
-console.log('mock called');
+console.log('weather mock called');
 
 async function fetchWeather(city)
 {
